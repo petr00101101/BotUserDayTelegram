@@ -8,15 +8,15 @@ export async function connectToDatabase() {
 
   // Connection events
   mongoose.connection
-    .once('open', () => console.info('Sucessfully connected to database'))
+    .once('open', () => console.log('Sucessfully connected to database'))
     .on('error', () => {
       throw new Error('Unable to connect to database');
     });
 
   await mongoose.connect(
-    process.env.DB_UR,
+    process.env.DB_URL,
     // Fix deprecation warnings
-    { useNewUrlParser: true, useCreateIndex: true },
+    { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true },
   );
 }
 

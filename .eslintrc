@@ -6,6 +6,7 @@
   "extends": ["airbnb-base", "plugin:prettier/recommended"],
   "plugins": ["prettier"],
   "rules": {
+    "consistent-return": 0,
     // Imports
     "import/extensions": [
       "error",
