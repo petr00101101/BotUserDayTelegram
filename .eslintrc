@@ -5,5 +5,15 @@
   },
   "extends": ["airbnb-base", "plugin:prettier/recommended"],
   "plugins": ["prettier"],
-  "rules": {}
+  "rules": {
+    // Imports
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        ".mjs": "never"
+      }
+    ],
+    "import/prefer-default-export": 0
+  }
 }
