@@ -16,7 +16,7 @@ export async function connectToDatabase() {
   await mongoose.connect(
     process.env.DB_URL,
     // Fix deprecation warnings
-    { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true },
+    { useUnifiedTopology: true, useNewUrlParser: true },
   );
 }
 

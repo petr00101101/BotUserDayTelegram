@@ -7,6 +7,9 @@
   "plugins": ["prettier"],
   "rules": {
     "consistent-return": 0,
+    "camelcase": 0,
+    "no-await-in-loop": 0,
+    "no-restricted-syntax": 0,
     // Imports
     "import/extensions": [
       "error",

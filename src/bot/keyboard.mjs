@@ -1,16 +1,15 @@
 import Markup from 'telegraf/markup.js';
 
 export const KEYBOARD_ACTIONS = {
-  REGISTRATION: '🦦 Registration',
-  LEAVE: '💩 Leave',
-  STATS: '📋 Show Stats',
-  RUN: '🏃🏾 Run',
+  REGISTRATION: '🦦 Регистрация',
+  MEMBERS: '📋 Список ровных ребят',
+  PLAY: '🤞 Вычислить ебаное животное',
 };
 
 export function getKeyboard() {
   return Markup.keyboard([
-    [KEYBOARD_ACTIONS.RUN, KEYBOARD_ACTIONS.STATS],
-    [KEYBOARD_ACTIONS.REGISTRATION, KEYBOARD_ACTIONS.LEAVE],
+    [KEYBOARD_ACTIONS.PLAY],
+    [KEYBOARD_ACTIONS.REGISTRATION, KEYBOARD_ACTIONS.MEMBERS],
   ])
     .oneTime()
     .resize()
