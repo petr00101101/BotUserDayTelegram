@@ -3,7 +3,9 @@ import Telegram from 'telegraf/telegram.js';
 
 import { getKeyboard, KEYBOARD_ACTIONS } from './keyboard.mjs';
 import { createUser, getUsers, getUser } from '../user/user.repo.mjs';
-import { getFormattedUserNames } from '../helpers/getFormattedUserNames.mjs';
+import { createGame, getGames } from '../game/game.repo.mjs';
+import { getFormattedUserNames } from '../../helpers/getFormattedUserNames.mjs';
+import { getFormattedGames } from '../../helpers/getFormattedGames.mjs';
 
 const REPLY_MESSAGES = {
   GREETINGS: 'Здарова',
@@ -11,6 +13,7 @@ const REPLY_MESSAGES = {
   NEWLY_REGISTERED: 'Теперь ты в деле!',
   NOT_REGISTERED: 'Пока ты базаришь - другие делают. Зарегистрируйся сначала!',
   NO_MEMBERS: 'Нет игроков!',
+  NO_GAMES: 'Нет игр!',
   MEMBERS_LIST: 'Посоны с яйцами:',
   GAME: [
     'Красная книга изучена! 🏮',
@@ -40,7 +43,7 @@ export function runBot() {
 
     switch (ctx.message.text) {
       case KEYBOARD_ACTIONS.REGISTRATION: {
-        if (wasUserRegisteredBefore(from.id, chat.id)) {
+        if (await wasUserRegisteredBefore(from.id, chat.id)) {
           return ctx.reply(REPLY_MESSAGES.ALREADY_REGISTERED);
         }
 
@@ -54,7 +57,7 @@ export function runBot() {
         return ctx.reply(REPLY_MESSAGES.NEWLY_REGISTERED);
       }
       case KEYBOARD_ACTIONS.MEMBERS: {
-        if (!wasUserRegisteredBefore(from.id, chat.id)) {
+        if (!(await wasUserRegisteredBefore(from.id, chat.id))) {
           return ctx.reply(REPLY_MESSAGES.NOT_REGISTERED);
         }
 
@@ -71,8 +74,26 @@ export function runBot() {
 
         return ctx.reply(`${REPLY_MESSAGES.MEMBERS_LIST}:\n${members}`);
       }
+      case KEYBOARD_ACTIONS.GAMES: {
+        if (!(await wasUserRegisteredBefore(from.id, chat.id))) {
+          return ctx.reply(REPLY_MESSAGES.NOT_REGISTERED);
+        }
+
+        const games = await getGames({ chatId: chat.id });
+        if (!games.length) {
+          return ctx.reply(REPLY_MESSAGES.NO_GAMES);
+        }
+
+        const response = getFormattedGames(games)
+          .map((game, index) => {
+            return `\n${index + 1}) ${game}`;
+          })
+          .join('');
+
+        return ctx.reply(response);
+      }
       case KEYBOARD_ACTIONS.PLAY: {
-        if (!wasUserRegisteredBefore(from.id, chat.id)) {
+        if (!(await wasUserRegisteredBefore(from.id, chat.id))) {
           return ctx.reply(REPLY_MESSAGES.NOT_REGISTERED);
         }
 
@@ -82,6 +103,8 @@ export function runBot() {
         }
         const random = Math.floor(Math.random() * users.length);
         const animal = getFormattedUserNames(users)[random];
+
+        await createGame({ chatId: chat.id, winner: animal });
 
         for (const message of REPLY_MESSAGES.GAME) {
           await ctx.reply(message);
@@ -97,6 +120,9 @@ export function runBot() {
         break;
       }
     }
+  });
+  bot.catch((err, ctx) => {
+    console.log(`Ooops, encountered an error for ${ctx.updateType}`, err);
   });
 
   bot.launch();
