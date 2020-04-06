@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 
 import { checkEnv } from './helpers/checkEnv.mjs';
-import { runBot } from './bot/bot.mjs';
+import { runBot } from './components/bot/bot.mjs';
 import { connectToDatabase } from './config/database.mjs';
 
 dotenv.config();
