@@ -65,7 +65,7 @@ export async function playGameHandler(ctx, telegram) {
 
   const game = await getGame({ chatId: chat.id, date: getDate() });
   if (game) {
-    return ctx.reply(`REPLY_MESSAGES.DAY_WINNER: ${game.winner}`);
+    return ctx.reply(`${REPLY_MESSAGES.DAY_WINNER} ${game.winner}`);
   }
 
   // TODO: Remove game logic

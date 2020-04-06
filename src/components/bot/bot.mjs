@@ -1,5 +1,5 @@
 import Telegraf from 'telegraf';
-import Telegram from 'telegraf/telegram.js';
+import schedule from 'node-schedule';
 
 import { getKeyboard } from './bot.keyboard.mjs';
 import { REPLY_MESSAGES, KEYBOARD_COMMANDS } from './bot.constants.mjs';
@@ -13,7 +13,6 @@ import { withAuthentication } from './bot.middlewares.mjs';
 
 export function runBot() {
   const bot = new Telegraf(process.env.BOT_TOKEN);
-  const telegram = new Telegram(process.env.BOT_TOKEN);
 
   // Start message
   bot.start((ctx) => {
@@ -36,7 +35,7 @@ export function runBot() {
         return getGamesHandler(ctx);
       }
       case KEYBOARD_COMMANDS.PLAY: {
-        return playGameHandler(ctx, telegram);
+        return playGameHandler(ctx, bot.telegram);
       }
       default: {
         break;
