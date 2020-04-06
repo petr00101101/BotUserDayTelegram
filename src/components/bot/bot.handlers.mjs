@@ -1,8 +1,9 @@
 import { REPLY_MESSAGES } from './bot.constants.mjs';
 import { createUser, getUsers } from '../user/user.repo.mjs';
-import { createGame, getGames } from '../game/game.repo.mjs';
+import { createGame, getGames, getGame } from '../game/game.repo.mjs';
 import { getFormattedUserNames } from '../../helpers/getFormattedUserNames.mjs';
 import { getFormattedGames } from '../../helpers/getFormattedGames.mjs';
+import { getDate } from '../../helpers/getDate.mjs';
 
 export async function registrationHandler(ctx) {
   const { from, chat } = ctx.message;
@@ -26,6 +27,7 @@ export async function getGameMembersHandler(ctx) {
     return ctx.reply(REPLY_MESSAGES.NO_MEMBERS);
   }
 
+  // TODO: Improve formatter
   const members = getFormattedUserNames(users)
     .map((userName, index) => {
       return `\n${index + 1}) ${userName}`;
@@ -43,6 +45,7 @@ export async function getGamesHandler(ctx) {
     return ctx.reply(REPLY_MESSAGES.NO_GAMES);
   }
 
+  // TODO: Improve formatter
   const response = getFormattedGames(games)
     .map((game, index) => {
       return `\n${index + 1}) ${game}`;
@@ -60,7 +63,14 @@ export async function playGameHandler(ctx, telegram) {
     return ctx.reply(REPLY_MESSAGES.NO_MEMBERS);
   }
 
+  const game = await getGame({ chatId: chat.id, date: getDate() });
+  if (game) {
+    return ctx.reply(`REPLY_MESSAGES.DAY_WINNER: ${game.winner}`);
+  }
+
+  // TODO: Remove game logic
   const random = Math.floor(Math.random() * users.length);
+  // TODO: Improve formatter
   const animal = getFormattedUserNames(users)[random];
 
   await createGame({ chatId: chat.id, winner: animal });

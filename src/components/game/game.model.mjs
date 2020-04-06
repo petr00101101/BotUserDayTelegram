@@ -6,9 +6,8 @@ const GameSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type: String,
     required: true,
-    unique: true,
   },
   chatId: {
     type: String,

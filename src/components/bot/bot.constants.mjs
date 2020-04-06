@@ -12,6 +12,7 @@ export const REPLY_MESSAGES = {
     'Царь зверей постановил! 🦁',
     'Ебаное животное определено:',
   ],
+  DAY_WINNER: 'Ебаное животное дня:',
 };
 
 export const KEYBOARD_COMMANDS = {
