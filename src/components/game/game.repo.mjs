@@ -1,23 +1,13 @@
 import { Game } from './game.model.mjs';
 import { getFormattedDate } from '../../helpers/getFormattedDate.mjs';
 
-export async function getGames({ chatId }) {
-  const games = await Game.find()
-    .populate('winner')
-    .populate({
-      path: 'chat',
-      match: { id: chatId },
-    });
+export async function getChatGames({ chatId }) {
+  const games = await Game.findByChatId({ chatId });
   return games;
 }
 
 export async function getGame({ date, chatId }) {
-  const game = await Game.findOne({ date })
-    .populate('winner')
-    .populate({
-      path: 'chat',
-      match: { id: chatId },
-    });
+  const game = await Game.findOneByDateAndChatId({ date, chatId });
   return game;
 }
 

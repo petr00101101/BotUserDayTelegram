@@ -1,18 +1,12 @@
 import { User } from './user.model.mjs';
 
 export async function getUsers({ chatId }) {
-  const users = await User.find({}).populate({
-    path: 'chat',
-    match: { id: chatId },
-  });
+  const users = await User.findByChatId({ chatId });
   return users;
 }
 
 export async function getUser({ id, chatId }) {
-  const user = await User.findOne({ id }).populate({
-    path: 'chat',
-    match: { id: chatId },
-  });
+  const user = await User.findOneByIdAndChatId({ id, chatId });
   return user;
 }
 

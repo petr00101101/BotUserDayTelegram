@@ -32,4 +32,22 @@ UserSchema.virtual('fullName').get(function () {
   return `${this.firstName}`;
 });
 
+// eslint-disable-next-line func-names
+UserSchema.statics.findOneByIdAndChatId = async function ({ id, chatId }) {
+  const user = await this.findOne({ id }).populate({
+    path: 'chat',
+    match: { id: chatId },
+  });
+  return user;
+};
+
+// eslint-disable-next-line func-names
+UserSchema.statics.findByChatId = async function ({ chatId }) {
+  const users = await this.find({}).populate({
+    path: 'chat',
+    match: { id: chatId },
+  });
+  return users;
+};
+
 export const User = mongoose.model('user', UserSchema);

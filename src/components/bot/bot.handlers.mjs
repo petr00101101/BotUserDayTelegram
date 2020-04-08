@@ -1,6 +1,6 @@
 import { REPLY_MESSAGES } from './bot.constants.mjs';
 import { createUser, getUsers } from '../user/user.repo.mjs';
-import { createGame, getGames, getGame } from '../game/game.repo.mjs';
+import { createGame, getChatGames, getGame } from '../game/game.repo.mjs';
 import { createChat, getChat } from '../chat/chat.repo.mjs';
 import { getFormattedDate } from '../../helpers/getFormattedDate.mjs';
 
@@ -43,7 +43,7 @@ export async function getGameMembersHandler(ctx) {
 export async function getGamesHandler(ctx) {
   const { chat } = ctx.message;
 
-  const games = await getGames({ chatId: chat.id });
+  const games = await getChatGames({ chatId: chat.id });
   if (!games.length) {
     return ctx.reply(REPLY_MESSAGES.NO_GAMES);
   }
@@ -66,7 +66,7 @@ export async function playGameHandler(ctx, telegram) {
   }
 
   const game = await getGame({ chatId: chat.id, date: getFormattedDate() });
-  console.log(game);
+
   if (game) {
     return ctx.reply(`${REPLY_MESSAGES.DAY_WINNER} ${game.winner.fullName}`);
   }
