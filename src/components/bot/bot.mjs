@@ -13,7 +13,7 @@ import { userAuthentication } from './bot.middlewares.mjs';
 export function runBot() {
   const bot = new Telegraf(process.env.BOT_TOKEN);
 
-  // Start message
+  // Start message with keyboard
   bot.start((ctx) => {
     return ctx.reply(REPLY_MESSAGES.GREETINGS, getKeyboard());
   });
@@ -42,10 +42,11 @@ export function runBot() {
     }
   });
 
-  // Error handling
+  // Error handler
   bot.catch((err, ctx) => {
     console.log(`Ooops, encountered an error for ${ctx.updateType}`, err);
   });
 
+  // Start bot
   bot.launch().then(() => console.log(`${process.env.BOT_NAME} started`));
 }

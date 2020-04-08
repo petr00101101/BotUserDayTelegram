@@ -71,7 +71,6 @@ export async function playGameHandler(ctx, telegram) {
     return ctx.reply(`${REPLY_MESSAGES.DAY_WINNER} ${game.winner.fullName}`);
   }
 
-  // TODO: Move game logic
   const random = Math.floor(Math.random() * users.length);
   const animal = users[random];
 
