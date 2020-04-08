@@ -31,13 +31,13 @@ export async function getGameMembersHandler(ctx) {
     return ctx.reply(REPLY_MESSAGES.NO_MEMBERS);
   }
 
-  const members = users
+  const formattedUsers = users
     .map((user, index) => {
       return `\n${index + 1}) ${user.fullName}`;
     })
     .join('');
 
-  return ctx.reply(`${REPLY_MESSAGES.MEMBERS_LIST}:\n${members}`);
+  return ctx.reply(`${REPLY_MESSAGES.MEMBERS_LIST}:\n${formattedUsers}`);
 }
 
 export async function getGamesHandler(ctx) {
@@ -48,13 +48,13 @@ export async function getGamesHandler(ctx) {
     return ctx.reply(REPLY_MESSAGES.NO_GAMES);
   }
 
-  const response = games
+  const formattedGames = games
     .map((game, index) => {
       return `\n${index + 1}) ${game.date} - ${game.winner.fullName}`;
     })
     .join('');
 
-  return ctx.reply(response);
+  return ctx.reply(formattedGames);
 }
 
 export async function playGameHandler(ctx, telegram) {
