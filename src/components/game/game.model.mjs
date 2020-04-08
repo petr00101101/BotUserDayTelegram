@@ -2,16 +2,16 @@ import mongoose from 'mongoose';
 
 const GameSchema = new mongoose.Schema({
   winner: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
   },
   date: {
     type: String,
     required: true,
   },
-  chatId: {
-    type: String,
-    required: true,
+  chat: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'chat',
   },
 });
 

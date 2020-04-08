@@ -8,7 +8,7 @@ import {
   getGamesHandler,
   playGameHandler,
 } from './bot.handlers.mjs';
-import { withAuthentication } from './bot.middlewares.mjs';
+import { userAuthentication } from './bot.middlewares.mjs';
 
 export function runBot() {
   const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -19,7 +19,7 @@ export function runBot() {
   });
 
   // Middlewares
-  bot.use(withAuthentication);
+  bot.use(userAuthentication);
 
   // Commands handler
   bot.use(async (ctx) => {

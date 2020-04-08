@@ -1,7 +1,7 @@
 import { REPLY_MESSAGES, KEYBOARD_COMMANDS } from './bot.constants.mjs';
 import { getUser } from '../user/user.repo.mjs';
 
-export async function withAuthentication(ctx, next) {
+export async function userAuthentication(ctx, next) {
   const PUBLIC_ACTIONS = [KEYBOARD_COMMANDS.REGISTRATION];
 
   const { message } = ctx;

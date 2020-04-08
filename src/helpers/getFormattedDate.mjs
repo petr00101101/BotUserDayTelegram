@@ -1,7 +1,7 @@
 import moment from 'moment';
 
-const DATE_FORMAT = 'YYYY MM DD';
+const DATE_FORMAT = 'DD/MM/YYYY';
 
-export function getDate() {
+export function getFormattedDate() {
   return moment().format(DATE_FORMAT);
 }

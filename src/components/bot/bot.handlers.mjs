@@ -1,19 +1,23 @@
 import { REPLY_MESSAGES } from './bot.constants.mjs';
 import { createUser, getUsers } from '../user/user.repo.mjs';
 import { createGame, getGames, getGame } from '../game/game.repo.mjs';
-import { getFormattedUserNames } from '../../helpers/getFormattedUserNames.mjs';
-import { getFormattedGames } from '../../helpers/getFormattedGames.mjs';
-import { getDate } from '../../helpers/getDate.mjs';
+import { createChat, getChat } from '../chat/chat.repo.mjs';
+import { getFormattedDate } from '../../helpers/getFormattedDate.mjs';
 
 export async function registrationHandler(ctx) {
   const { from, chat } = ctx.message;
+
+  let dbChat = await getChat({ id: chat.id });
+  if (!dbChat) {
+    dbChat = await createChat({ id: chat.id });
+  }
 
   await createUser({
     firstName: from.first_name,
     lastName: from.last_name,
     userName: from.username,
     id: from.id,
-    chatId: chat.id,
+    chatId: dbChat._id,
   });
 
   return ctx.reply(REPLY_MESSAGES.NEWLY_REGISTERED);
@@ -27,10 +31,9 @@ export async function getGameMembersHandler(ctx) {
     return ctx.reply(REPLY_MESSAGES.NO_MEMBERS);
   }
 
-  // TODO: Improve formatter
-  const members = getFormattedUserNames(users)
-    .map((userName, index) => {
-      return `\n${index + 1}) ${userName}`;
+  const members = users
+    .map((user, index) => {
+      return `\n${index + 1}) ${user.fullName}`;
     })
     .join('');
 
@@ -45,10 +48,9 @@ export async function getGamesHandler(ctx) {
     return ctx.reply(REPLY_MESSAGES.NO_GAMES);
   }
 
-  // TODO: Improve formatter
-  const response = getFormattedGames(games)
+  const response = games
     .map((game, index) => {
-      return `\n${index + 1}) ${game}`;
+      return `\n${index + 1}) ${game.date} - ${game.winner.fullName}`;
     })
     .join('');
 
@@ -63,25 +65,28 @@ export async function playGameHandler(ctx, telegram) {
     return ctx.reply(REPLY_MESSAGES.NO_MEMBERS);
   }
 
-  const game = await getGame({ chatId: chat.id, date: getDate() });
+  const game = await getGame({ chatId: chat.id, date: getFormattedDate() });
+  console.log(game);
   if (game) {
-    return ctx.reply(`${REPLY_MESSAGES.DAY_WINNER} ${game.winner}`);
+    return ctx.reply(`${REPLY_MESSAGES.DAY_WINNER} ${game.winner.fullName}`);
   }
 
-  // TODO: Remove game logic
+  // TODO: Move game logic
   const random = Math.floor(Math.random() * users.length);
-  // TODO: Improve formatter
-  const animal = getFormattedUserNames(users)[random];
+  const animal = users[random];
 
-  await createGame({ chatId: chat.id, winner: animal });
+  await createGame({
+    chatId: await getChat({ id: chat.id })._id,
+    userId: animal._id,
+  });
 
   for (const message of REPLY_MESSAGES.GAME) {
     await ctx.reply(message);
   }
 
-  return ctx.reply(`\n${animal}`).then(({ message_id }) => {
+  return ctx.reply(`\n${animal.fullName}`).then(({ message_id }) => {
     telegram
-      .pinChatMessage(users[random].chatId, message_id)
+      .pinChatMessage(animal.chat.id, message_id)
       .catch((error) => console.log(error.description));
   });
 }
