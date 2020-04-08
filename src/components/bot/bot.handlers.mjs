@@ -72,20 +72,20 @@ export async function playGameHandler(ctx, telegram) {
   }
 
   const random = Math.floor(Math.random() * users.length);
-  const animal = users[random];
+  const winner = users[random];
 
   await createGame({
     chatId: await getChat({ id: chat.id })._id,
-    userId: animal._id,
+    userId: winner._id,
   });
 
   for (const message of REPLY_MESSAGES.GAME) {
     await ctx.reply(message);
   }
 
-  return ctx.reply(`\n${animal.fullName}`).then(({ message_id }) => {
+  return ctx.reply(`\n${winner.fullName}`).then(({ message_id }) => {
     telegram
-      .pinChatMessage(animal.chat.id, message_id)
+      .pinChatMessage(winner.chat.id, message_id)
       .catch((error) => console.log(error.description));
   });
 }
