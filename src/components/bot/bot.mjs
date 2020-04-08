@@ -1,5 +1,4 @@
 import Telegraf from 'telegraf';
-import schedule from 'node-schedule';
 
 import { getKeyboard } from './bot.keyboard.mjs';
 import { REPLY_MESSAGES, KEYBOARD_COMMANDS } from './bot.constants.mjs';

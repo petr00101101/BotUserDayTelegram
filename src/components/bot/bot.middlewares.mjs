@@ -8,8 +8,11 @@ export async function withAuthentication(ctx, next) {
   const { text, from, chat } = message;
 
   const user = await getUser({ id: from.id, chatId: chat.id });
-
-  if (!user && !PUBLIC_ACTIONS.includes(text)) {
+  if (
+    !user &&
+    Object.values(KEYBOARD_COMMANDS).includes(text) &&
+    !PUBLIC_ACTIONS.includes(text)
+  ) {
     return ctx.reply(REPLY_MESSAGES.NOT_REGISTERED);
   }
   if (user && text === KEYBOARD_COMMANDS.REGISTRATION) {
